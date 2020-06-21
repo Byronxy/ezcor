@@ -6,8 +6,8 @@
 \usage{
 ezcor_parallel(
   data,
-  target_variable,
-  covariates,
+  var1,
+  var2,
   split = FALSE,
   split_var = NULL,
   Cor_method = "pearson",
@@ -20,9 +20,9 @@ ezcor_parallel(
 \arguments{
 \item{data}{a `data.frame` containing variables}
 
-\item{target_variable}{a `character`, the first variable in correlation}
+\item{var1}{a `character`, the first variable in correlation}
 
-\item{covariates}{a `vector` containing variables in a batch mode}
+\item{var2}{a `vector` containing variables in a batch mode}
 
 \item{split}{whether perform correlation grouped by a variable, default is 'FALSE'}
 

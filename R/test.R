@@ -52,3 +52,5 @@
 #                                          sig_label = TRUE))
 # res[1,]$z = var3
 # var3 = paste(var3,collapse = ",")
+
+# res <- WGCNA::bicor(x = exprSet[, "TMED3"], y = exprSet[, "HIF1A"])

@@ -1,7 +1,7 @@
 #' Run partial correlation
 #'
-#' wrap function from ppcor and please cite: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4681537/
-#'
+#' @inheritParams ppcor::pcor.test
+#' @seealso [ppcor::pcor.test()] which this function wraps.
 #' @param data a `data.frame` containing variables
 #' @param split whether perform correlation grouped by a variable, default is 'FALSE'
 #' @param split_var a `character`, the group variable
@@ -10,8 +10,6 @@
 #' @param var3 a `character` or `character vector`, the third variable in correlation
 #' @param Cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
 #' @param sig_label whether add symbal of significance. P < 0.001,"***"; P < 0.01,"**"; P < 0.05,"*"; P >=0.05,""
-
-
 #' @import purrr
 #' @return a `data.frame`
 #' @author Yi Xiong
@@ -22,7 +20,8 @@ ezcor_partial_cor <- function(data= NULL,
                       var2 = NULL,
                       var3 = NULL,
                       Cor_method = "pearson",
-                      sig_label = TRUE){
+                      sig_label = TRUE,
+                      ...){
   if (!requireNamespace("ppcor")) {
     stop("Please install 'ppcor' package firstly!")
   }
@@ -44,12 +43,12 @@ ezcor_partial_cor <- function(data= NULL,
       #x = s[1]
       sss_sub<- sss[[x]]
       if (length(var3) > 1){
-        dd <- ppcor::pcor.test(as.numeric(sss_sub[,var1]),as.numeric(sss_sub[,var2]),as.matrix(sss_sub[,var3]),method = Cor_method)
+        dd <- ppcor::pcor.test(as.numeric(sss_sub[,var1]),as.numeric(sss_sub[,var2]),as.matrix(sss_sub[,var3]),method = Cor_method,...)
         ddd <- data.frame(cor = dd$estimate, p.value = dd$p.value, method= Cor_method, x = var1,  y = var2, z = paste(var3,collapse = ",") , stringsAsFactors = F)
         ddd$group <- x
         return(ddd)
       }else{
-        dd <- ppcor::pcor.test(as.numeric(sss_sub[,var1]),as.numeric(sss_sub[,var2]),as.numeric(sss_sub[,var3]),method = Cor_method)
+        dd <- ppcor::pcor.test(as.numeric(sss_sub[,var1]),as.numeric(sss_sub[,var2]),as.numeric(sss_sub[,var3]),method = Cor_method....)
         ddd <- data.frame(cor = dd$estimate, p.value = dd$p.value, method= Cor_method, x = var1,  y = var2, z = var3, stringsAsFactors = F)
         ddd$group <- x
         return(ddd)
@@ -73,7 +72,7 @@ ezcor_partial_cor <- function(data= NULL,
   if (split == FALSE){
     sss <- ss
     if (length(var3) > 1){
-      dd <- ppcor::pcor.test(as.numeric(sss[,var1]),as.numeric(sss[,var2]),as.matrix(sss[,var3]),method = Cor_method)
+      dd <- ppcor::pcor.test(as.numeric(sss[,var1]),as.numeric(sss[,var2]),as.matrix(sss[,var3]),method = Cor_method,...)
       ddd <- data.frame(cor = dd$estimate, p.value = dd$p.value, method= Cor_method, x = var1,  y = var2, z = paste(var3,collapse = ",") , stringsAsFactors = F)
       #ddd$group <- x
       return(ddd)

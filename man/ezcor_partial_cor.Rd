@@ -2,8 +2,7 @@
 % Please edit documentation in R/ezcor_partial_cor.R
 \name{ezcor_partial_cor}
 \alias{ezcor_partial_cor}
-\title{partial correlation
-wrap function from ppcor and please cite: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4681537/}
+\title{Run partial correlation}
 \usage{
 ezcor_partial_cor(
   data = NULL,
@@ -14,7 +13,7 @@ ezcor_partial_cor(
   var3 = NULL,
   Cor_method = "pearson",
   sig_label = TRUE,
-  verbose = TRUE
+  ...
 )
 }
 \arguments{
@@ -33,17 +32,15 @@ ezcor_partial_cor(
 \item{Cor_method}{method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"}
 
 \item{sig_label}{whether add symbal of significance. P < 0.001,"***"; P < 0.01,"**"; P < 0.05,"*"; P >=0.05,""}
-
-\item{verbose}{if `TRUE`, print extra info.}
-
-\item{adjust_method}{What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")}
 }
 \value{
 a `data.frame`
 }
 \description{
-partial correlation
-wrap function from ppcor and please cite: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4681537/
+Run partial correlation
+}
+\seealso{
+[ppcor::pcor.test()] which this function wraps.
 }
 \author{
 Yi Xiong

@@ -2,6 +2,8 @@
 
 export("%>%")
 export(ezcor2var)
+export(ezcor_bicor)
+export(ezcor_bicor_parallel)
 export(ezcor_parallel)
 import(dplyr)
 import(psych)
