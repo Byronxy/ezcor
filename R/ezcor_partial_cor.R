@@ -1,34 +1,34 @@
-#' Run correlation between two variables and support group by a variable
+#' Run partial correlation
+#'
+#' wrap function from ppcor and please cite: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4681537/
 #'
 #' @param data a `data.frame` containing variables
 #' @param split whether perform correlation grouped by a variable, default is 'FALSE'
 #' @param split_var a `character`, the group variable
-#' @param var1 a `character, the first variable in correlation
-#' @param var2 a `character, the second variable in correlation
+#' @param var1 a `character`, the first variable in correlation
+#' @param var2 a `character`, the second variable in correlation
+#' @param var3 a `character` or `character vector`, the third variable in correlation
 #' @param Cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
-#' @param adjust_method What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 #' @param sig_label whether add symbal of significance. P < 0.001,"***"; P < 0.01,"**"; P < 0.05,"*"; P >=0.05,""
-#' @param verbose if `TRUE`, print extra info.
 
-#' @import psych
+
 #' @import purrr
-#' @importFrom purrr set_names
-#'
 #' @return a `data.frame`
 #' @author Yi Xiong
-#' @export
-
-ezcor2var <- function(data= NULL,
+ezcor_partial_cor <- function(data= NULL,
                       split = FALSE,
                       split_var = NULL,
                       var1 = NULL,
                       var2 = NULL,
+                      var3 = NULL,
                       Cor_method = "pearson",
-                      adjust_method = "none",
-                      sig_label = TRUE,
-                      verbose = TRUE){
+                      sig_label = TRUE){
+  if (!requireNamespace("ppcor")) {
+    stop("Please install 'ppcor' package firstly!")
+  }
   stopifnot(is.data.frame(data))
   ss <- data
+  #var1 = x; var2 = y; var3 = z
   if (!var1 %in% colnames(ss)){stop("the first variable is unavailable in the dataset!")}
   if (!var2 %in% colnames(ss)){stop("the second variable is unavailable in the dataset!")}
   if (length(var1) != 1){stop("only one element is needed in the first variable!")}
@@ -43,11 +43,18 @@ ezcor2var <- function(data= NULL,
     cor2var <- purrr::map(s, purrr::safely(function(x) {
       #x = s[1]
       sss_sub<- sss[[x]]
-      dd <- psych::corr.test(as.numeric(sss_sub[,var1]),as.numeric(sss_sub[,var2]), method = Cor_method,adjust = adjust_method)
-      #dd <- stats::cor.test(as.numeric(sss_can[,var1]),as.numeric(sss_can[,var2]), type = Cor_method)
-      ddd <- data.frame(cor = dd$r, p.value = dd$p, method= Cor_method, adjust = adjust_method, v1 = var1, v2 = var2 ,stringsAsFactors = F)
-      ddd$group <- x
-      return(ddd)
+      if (length(var3) > 1){
+        dd <- ppcor::pcor.test(as.numeric(sss_sub[,var1]),as.numeric(sss_sub[,var2]),as.matrix(sss_sub[,var3]),method = Cor_method)
+        ddd <- data.frame(cor = dd$estimate, p.value = dd$p.value, method= Cor_method, x = var1,  y = var2, z = paste(var3,collapse = ",") , stringsAsFactors = F)
+        ddd$group <- x
+        return(ddd)
+      }else{
+        dd <- ppcor::pcor.test(as.numeric(sss_sub[,var1]),as.numeric(sss_sub[,var2]),as.numeric(sss_sub[,var3]),method = Cor_method)
+        ddd <- data.frame(cor = dd$estimate, p.value = dd$p.value, method= Cor_method, x = var1,  y = var2, z = var3, stringsAsFactors = F)
+        ddd$group <- x
+        return(ddd)
+      }
+
     })) %>% purrr::set_names(s)
 
     cor2var <- cor2var %>%
@@ -65,8 +72,17 @@ ezcor2var <- function(data= NULL,
 
   if (split == FALSE){
     sss <- ss
-    dd <- psych::corr.test(as.numeric(sss[,var1]),as.numeric(sss[,var2]), method = Cor_method,adjust = adjust_method)
-    ddd <- data.frame(cor = dd$r, p.value = dd$p, method= Cor_method, adjust = adjust_method, v1 = var1,  v2 = var2, stringsAsFactors = F)
+    if (length(var3) > 1){
+      dd <- ppcor::pcor.test(as.numeric(sss[,var1]),as.numeric(sss[,var2]),as.matrix(sss[,var3]),method = Cor_method)
+      ddd <- data.frame(cor = dd$estimate, p.value = dd$p.value, method= Cor_method, x = var1,  y = var2, z = paste(var3,collapse = ",") , stringsAsFactors = F)
+      #ddd$group <- x
+      return(ddd)
+    }else{
+      dd <- ppcor::pcor.test(as.numeric(sss[,var1]),as.numeric(sss[,var2]),as.numeric(sss[,var3]),method = Cor_method)
+      ddd <- data.frame(cor = dd$estimate, p.value = dd$p.value, method= Cor_method, x = var1,  y = var2, z = var3, stringsAsFactors = F)
+      #ddd$group <- x
+      return(ddd)
+    }
 
     cor2var_df <- ddd
 
@@ -79,7 +95,3 @@ ezcor2var <- function(data= NULL,
     return(cor2var_df)
   }
 }
-
-
-
-

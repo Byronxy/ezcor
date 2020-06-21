@@ -8,18 +8,17 @@
 #' @param Cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
 #' @param adjust_method What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 #' @param sig_label whether add symbal of significance. P < 0.001,"***"; P < 0.01,"\\**"; P < 0.05,"*"; P >=0.05,""
-#' @param batch_size processing size in a batch.
 #' @param parallel if `TRUE`, do parallel computation by **furrr** package.
 #' @param verbose if `TRUE`, print extra info. If `parallel` is `TRUE`,
 #' set `verbose` to `FALSE` may speed up.
+#'
 #' @import dplyr
-#' @import furrr
 #' @import psych
 #' @import purrr
-#' @importFrom magrittr set_names
+#' @importFrom purrr set_names
 #'
 #' @return a `data.frame`
-#' @author Yi Xiong
+#' @author Yi Xiong, Shixiang Wang
 #' @export
 #'
 #'
@@ -29,21 +28,28 @@ ezcor_parallel <- function(data,
                            covariates,
                            split = FALSE,
                            split_var = NULL,
-                           batch_size = 100,
                            Cor_method = "pearson",
                            adjust_method = "none",
                            sig_label = TRUE,
                            parallel = FALSE,
                            verbose = FALSE){
+
   stopifnot(is.data.frame(data))
+
   ss <- data
-  var_list <- split_vector(covariates, batch_size)
+
+  if (!target_variable %in% colnames(ss)){stop("the first variable is unavailable in the dataset!")}
+  if (!covariates %in% colnames(ss)){stop("the second variable is unavailable in the dataset!")}
+  if (length(target_variable) != 1){stop("only one element is needed in the target_variable variable!")}
   if (split == TRUE){
     if (!split_var %in% colnames(ss)){stop("split variable is unavailable in the dataset!")}
     all_cols <- unique(c(target_variable, covariates, split_var))
     ss <- data
     ss <- ss[, all_cols]
     if (parallel) {
+      if (!requireNamespace("furrr")) {
+        stop("Please install 'furrr' package firstly!")
+      }
       if (length(covariates) < 200) {
         if (verbose) message("Warning: variable < 200, parallel computation is not recommended!")
       }
@@ -54,40 +60,52 @@ ezcor_parallel <- function(data,
       oplan <- future::plan()
       future::plan("multiprocess")
       on.exit(future::plan(oplan), add = TRUE)
-      res <- furrr::future_map(var_list,
+      res <- furrr::future_map(covariates,
                                ezcor_caller,
                                data = ss,
-                               split_var = "tissue",
-                               split = TRUE,
+                               split_var = split_var,
+                               split = split,
                                var1 = target_variable,
                                Cor_method = Cor_method,
                                adjust_method = adjust_method,
                                sig_label = sig_label,
-                               verbose = verbose) %>% magrittr::set_names(covariates)
+                               verbose = verbose)
     } else {
-      res <- purrr::map(var_list,
+      res <- purrr::map(covariates,
                         ezcor_caller,
                         data = ss,
-                        split_var = "tissue",
-                        split = TRUE,
+                        split_var = split_var,
+                        split = split,
                         var1 = target_variable,
                         Cor_method = Cor_method,
                         adjust_method = adjust_method,
                         sig_label = sig_label,
-                        verbose = verbose) %>% magrittr::set_names(covariates)
-
+                        verbose = verbose) %>% purrr::set_names(covariates)
     }
     res2 <- dplyr::bind_rows(res)
     return(res2)
-  }else{
+  }
+  else{
+    res <- purrr::map(covariates,
+                      ezcor_caller,
+                      data = ss,
+                      split_var = split_var,
+                      split = split,
+                      var1 = target_variable,
+                      Cor_method = Cor_method,
+                      adjust_method = adjust_method,
+                      sig_label = sig_label,
+                      verbose = verbose) %>% purrr::set_names(covariates)
+    res2 <- dplyr::bind_rows(res)
+    return(res2)
+  }
 
   }
-}
 
 ezcor_caller <- function(var2,
                          data,
                          split_var = split_var,
-                         split = TRUE,
+                         split = split,
                          var1 = var1,
                          Cor_method = Cor_method,
                          adjust_method = adjust_method,
@@ -96,7 +114,7 @@ ezcor_caller <- function(var2,
   ezcor2var(
     data = data,
     split_var = split_var,
-    split = TRUE,
+    split = split,
     var1 = var1,
     var2 = var2,
     Cor_method = Cor_method,

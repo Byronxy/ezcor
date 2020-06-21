@@ -10,7 +10,6 @@ ezcor_parallel(
   covariates,
   split = FALSE,
   split_var = NULL,
-  batch_size = 100,
   Cor_method = "pearson",
   adjust_method = "none",
   sig_label = TRUE,
@@ -28,8 +27,6 @@ ezcor_parallel(
 \item{split}{whether perform correlation grouped by a variable, default is 'FALSE'}
 
 \item{split_var}{a `character`, the group variable}
-
-\item{batch_size}{processing size in a batch.}
 
 \item{Cor_method}{method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"}
 
@@ -49,5 +46,5 @@ a `data.frame`
 Run correlation between two variables in a batch mode and support group by a variable
 }
 \author{
-Yi Xiong
+Yi Xiong, Shixiang Wang
 }

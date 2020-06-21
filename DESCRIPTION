@@ -13,7 +13,7 @@ Author: person(given = "Yi",
            comment = c(ORCID = "0000-0001-9855-7357"))
 Maintainer: Yi Xiong <xiongyi123@csu.edu.cn>
 Description: A tool to perform correlation in a batch mode and return tidy result.
-License: GPL-3
+License: MIT License
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
@@ -23,5 +23,7 @@ Imports:
     dplyr (>= 0.8.3),
     magrittr (>= 1.5),
     purrr (>= 0.3.2),
-    psych,
+    psych
+Suggests:
+    ppcor,
     furrr
