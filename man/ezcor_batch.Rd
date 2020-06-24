@@ -56,14 +56,14 @@ genelist <-  setdiff(genelist,c("patient","tissue",target_variable))
 res <- ezcor::ezcor_batch(data = exprSet,
                           var1 = target_variable,
                           var2 = genelist,
-                          split = T,
+                          split = TRUE,
                           split_var = "tissue",
                           cor_method = "pearson",
                           adjust_method = "none",
                           use = "complete",
                           sig_label = TRUE,
-                          parallel = F,
-                          verbose = T)
+                          parallel = FALSE,
+                          verbose = TRUE)
 }
 \author{
 Yi Xiong, Shixiang Wang
