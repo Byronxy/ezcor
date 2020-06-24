@@ -5,7 +5,7 @@
 #' @param split_var a `character`, the group variable
 #' @param var1 a `character, the first variable in correlation
 #' @param var2 a `character, the second variable in correlation
-#' @param Cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
+#' @param cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
 #' @param adjust_method What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 #' @param use	use="pairwise" will do pairwise deletion of cases. use="complete" will select just complete cases
 #' @param sig_label whether add symbal of significance. P < 0.001,"***"; P < 0.01,"**"; P < 0.05,"*"; P >=0.05,""
@@ -18,13 +18,26 @@
 #' @return a `data.frame`
 #' @author Yi Xiong
 #' @export
+#' @examples
+#' data("exprSet", package = "ezcor", envir = environment())
+#' g1 <- colnames(exprSet)[3]
+#' g2 <- colnames(exprSet)[4]
+#' res <- ezcor::ezcor(data= exprSet,
+#'                    split = T,
+#'                    split_var = "tissue",
+#'                    var1 = g1,
+#'                    var2 = g2,
+#'                    cor_method = "spearman",
+#'                    adjust_method = "none",
+#'                    sig_label = TRUE,
+#'                    verbose = TRUE)
 
 ezcor <- function(data = NULL,
                   split = FALSE,
                   split_var = NULL,
                   var1 = NULL,
                   var2 = NULL,
-                  Cor_method = "pearson",
+                  cor_method = "pearson",
                   adjust_method = "none",
                   use = "complete",
                   sig_label = TRUE,
@@ -59,16 +72,16 @@ ezcor <- function(data = NULL,
         psych::corr.test(
           as.numeric(sss_sub[, var1]),
           as.numeric(sss_sub[, var2]),
-          method = Cor_method,
+          method = cor_method,
           adjust = adjust_method,
           use =  use
         )
-      #dd <- stats::cor.test(as.numeric(sss_can[,var1]),as.numeric(sss_can[,var2]), type = Cor_method)
+      #dd <- stats::cor.test(as.numeric(sss_can[,var1]),as.numeric(sss_can[,var2]), type = cor_method)
       ddd <-
         data.frame(
           cor = dd$r,
           p.value = dd$p,
-          method = Cor_method,
+          method = cor_method,
           adjust = adjust_method,
           v1 = var1,
           v2 = var2 ,
@@ -103,7 +116,7 @@ ezcor <- function(data = NULL,
       psych::corr.test(
         as.numeric(sss[, var1]),
         as.numeric(sss[, var2]),
-        method = Cor_method,
+        method = cor_method,
         adjust = adjust_method,
         use =  use
       )
@@ -111,7 +124,7 @@ ezcor <- function(data = NULL,
       data.frame(
         cor = dd$r,
         p.value = dd$p,
-        method = Cor_method,
+        method = cor_method,
         adjust = adjust_method,
         v1 = var1,
         v2 = var2,
@@ -143,7 +156,7 @@ ezcor <- function(data = NULL,
 #' @param split_var a `character`, the group variable
 #' @param var1 a `character`, the first variable in correlation
 #' @param var2 a `vector` containing variables in a batch mode
-#' @param Cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
+#' @param cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
 #' @param adjust_method What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 #' @param sig_label whether add symbal of significance. P < 0.001,"***"; P < 0.01,"\\**"; P < 0.05,"*"; P >=0.05,""
 #' @param use	use="pairwise" will do pairwise deletion of cases. use="complete" will select just complete cases
@@ -160,14 +173,29 @@ ezcor <- function(data = NULL,
 #' @author Yi Xiong, Shixiang Wang
 #' @export
 #'
-#'
+#' @examples
+#' data("exprSet", package = "ezcor", envir = environment())
+#' target_variable = colnames(exprSet)[3]
+#' genelist <- colnames(exprSet)
+#' genelist <-  setdiff(genelist,c("patient","tissue",target_variable))
+#' res <- ezcor::ezcor_batch(data = exprSet,
+#'                           var1 = target_variable,
+#'                           var2 = genelist,
+#'                           split = T,
+#'                           split_var = "tissue",
+#'                           cor_method = "pearson",
+#'                           adjust_method = "none",
+#'                           use = "complete",
+#'                           sig_label = TRUE,
+#'                           parallel = F,
+#'                           verbose = T)
 
 ezcor_batch <- function(data,
                         var1,
                         var2,
                         split = FALSE,
                         split_var = NULL,
-                        Cor_method = "pearson",
+                        cor_method = "pearson",
                         adjust_method = "none",
                         use = "complete",
                         sig_label = TRUE,
@@ -215,7 +243,7 @@ ezcor_batch <- function(data,
         split_var = split_var,
         split = split,
         var1 = var1,
-        Cor_method = Cor_method,
+        cor_method = cor_method,
         adjust_method = adjust_method,
         use = use,
         sig_label = sig_label,
@@ -229,7 +257,7 @@ ezcor_batch <- function(data,
         split_var = split_var,
         split = split,
         var1 = var1,
-        Cor_method = Cor_method,
+        cor_method = cor_method,
         adjust_method = adjust_method,
         use = use,
         sig_label = sig_label,
@@ -249,7 +277,7 @@ ezcor_batch <- function(data,
       split_var = split_var,
       split = split,
       var1 = var1,
-      Cor_method = Cor_method,
+      cor_method = cor_method,
       adjust_method = adjust_method,
       use = use,
       sig_label = sig_label,
@@ -266,7 +294,7 @@ ezcor_caller <- function(var2,
                          split_var = split_var,
                          split = split,
                          var1 = var1,
-                         Cor_method = Cor_method,
+                         cor_method = cor_method,
                          adjust_method = adjust_method,
                          use = use,
                          sig_label = sig_label,
@@ -277,7 +305,7 @@ ezcor_caller <- function(var2,
     split = split,
     var1 = var1,
     var2 = var2,
-    Cor_method = Cor_method,
+    cor_method = cor_method,
     adjust_method = adjust_method,
     use = use,
     sig_label = sig_label,

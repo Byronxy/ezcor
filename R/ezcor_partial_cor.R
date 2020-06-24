@@ -1,26 +1,42 @@
 #' Run partial correlation
 #'
-#' @inheritParams ppcor::pcor.test
-#' @seealso [ppcor::pcor.test()] which this function wraps.
+#'
+#' @seealso \link{ppcor::pcor.test()} which this function wraps.
 #' @param data a `data.frame` containing variables
 #' @param split whether perform correlation grouped by a variable, default is 'FALSE'
 #' @param split_var a `character`, the group variable
 #' @param var1 a `character`, the first variable in correlation
 #' @param var2 a `character`, the second variable in correlation
 #' @param var3 a `character` or `character vector`, the third variable in correlation
-#' @param Cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
+#' @param cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
 #' @param sig_label whether add symbal of significance. P < 0.001,"***"; P < 0.01,"**"; P < 0.05,"*"; P >=0.05,""
+#' @param ... other arguments passed to methods
 #' @import purrr
 #' @export
 #' @return a `data.frame`
 #' @author Yi Xiong
+#' @examples
+#' data("exprSet", package = "ezcor", envir = environment())
+#' g1 <- colnames(exprSet)[3]
+#' g2 <- colnames(exprSet)[4]
+#' g3 <- colnames(exprSet)[c(5,6)]
+#' res <- ezcor::ezcor_partial_cor(data = exprSet,
+#'                                 var1 = g1,
+#'                                 var2 = g2,
+#'                                 var3 = g3,
+#'                                 split = T,
+#'                                 split_var = "tissue",
+#'                                 cor_method = "pearson",
+#'                                 sig_label = TRUE)
+#'
+#'
 ezcor_partial_cor <- function(data = NULL,
                               split = FALSE,
                               split_var = NULL,
                               var1 = NULL,
                               var2 = NULL,
                               var3 = NULL,
-                              Cor_method = "pearson",
+                              cor_method = "pearson",
                               sig_label = TRUE,
                               ...) {
   if (!requireNamespace("ppcor")) {
@@ -59,14 +75,14 @@ ezcor_partial_cor <- function(data = NULL,
             as.numeric(sss_sub[, var1]),
             as.numeric(sss_sub[, var2]),
             as.matrix(sss_sub[, var3]),
-            method = Cor_method,
+            method = cor_method,
             ...
           )
         ddd <-
           data.frame(
             cor_partial = dd$estimate,
             p.value = dd$p.value,
-            method = Cor_method,
+            method = cor_method,
             x = var1,
             y = var2,
             z = paste(var3, collapse = ",") ,
@@ -79,12 +95,12 @@ ezcor_partial_cor <- function(data = NULL,
           ppcor::pcor.test(as.numeric(sss_sub[, var1]),
                            as.numeric(sss_sub[, var2]),
                            as.numeric(sss_sub[, var3]),
-                           method = Cor_method....)
+                           method = cor_method....)
         ddd <-
           data.frame(
             cor_partial = dd$estimate,
             p.value = dd$p.value,
-            method = Cor_method,
+            method = cor_method,
             x = var1,
             y = var2,
             z = var3,
@@ -122,13 +138,13 @@ ezcor_partial_cor <- function(data = NULL,
         ppcor::pcor.test(as.numeric(sss[, var1]),
                          as.numeric(sss[, var2]),
                          as.matrix(sss[, var3]),
-                         method = Cor_method,
+                         method = cor_method,
                          ...)
       ddd <-
         data.frame(
           cor_partial = dd$estimate,
           p.value = dd$p.value,
-          method = Cor_method,
+          method = cor_method,
           x = var1,
           y = var2,
           z = paste(var3, collapse = ",") ,
@@ -141,12 +157,12 @@ ezcor_partial_cor <- function(data = NULL,
         ppcor::pcor.test(as.numeric(sss[, var1]),
                          as.numeric(sss[, var2]),
                          as.numeric(sss[, var3]),
-                         method = Cor_method)
+                         method = cor_method)
       ddd <-
         data.frame(
           cor_partial = dd$estimate,
           p.value = dd$p.value,
-          method = Cor_method,
+          method = cor_method,
           x = var1,
           y = var2,
           z = var3,
@@ -177,7 +193,7 @@ ezcor_partial_cor <- function(data = NULL,
 
 #' Run parital correlation in a batch mode
 #'
-#' @inheritParams ppcor::pcor.test
+#'
 #' @seealso [ppcor::pcor.test()] which this function wraps.
 #' @param data a `data.frame` containing variables
 #' @param split whether perform correlation grouped by a variable, default is 'FALSE'
@@ -185,8 +201,9 @@ ezcor_partial_cor <- function(data = NULL,
 #' @param var1 a `character`, the first variable in correlation
 #' @param var2 a `character` or `vector`, the second variable in correlation, and support batch mode
 #' @param var3 a `character` or `character vector`, the third variable in correlation
-#' @param Cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
+#' @param cor_method method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"
 #' @param sig_label whether add symbal of significance. P < 0.001,"***"; P < 0.01,"**"; P < 0.05,"*"; P >=0.05,""
+#' @param ... other arguments passed to methods
 #' @import purrr
 #' @export
 #' @return a `data.frame`
@@ -198,7 +215,7 @@ ezcor_partial_cor_batch <- function(data = NULL,
                               var1 = NULL,
                               var2 = NULL,
                               var3 = NULL,
-                              Cor_method = "pearson",
+                              cor_method = "pearson",
                               sig_label = TRUE,
                               ...) {
   if (!requireNamespace("ppcor")) {
@@ -231,7 +248,7 @@ ezcor_partial_cor_batch <- function(data = NULL,
       split_var = split_var,
       var1 = var1,
       var3 = var3,
-      Cor_method = Cor_method,
+      cor_method = cor_method,
       sig_label = sig_label,
       ...
     ) %>% purrr::set_names(var2)
@@ -248,7 +265,7 @@ ezcor_partial_cor_batch <- function(data = NULL,
       split_var = split_var,
       var1 = var1,
       var3 = var3,
-      Cor_method = Cor_method,
+      cor_method = cor_method,
       sig_label = sig_label,
       ...
     ) %>% purrr::set_names(var2)
@@ -264,7 +281,7 @@ ezcor_partial_cor_caller <- function(var2,
                                      split_var = split_var,
                                      var1 = var1,
                                      var3 = var3,
-                                     Cor_method = Cor_method,
+                                     cor_method = cor_method,
                                      sig_label = sig_label,
                                      ...) {
   ezcor_partial_cor(
@@ -274,7 +291,7 @@ ezcor_partial_cor_caller <- function(var2,
     var1 = var1,
     var2 = var2,
     var3 = var3,
-    Cor_method = Cor_method,
+    cor_method = cor_method,
     sig_label = sig_label,
     ...
   )

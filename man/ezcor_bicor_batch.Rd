@@ -16,6 +16,8 @@ ezcor_bicor_batch(data, var1, var2, split = FALSE, split_var, ...)
 \item{split}{`logic value`, whether perform correlation grouped by a variable, default is 'FALSE'}
 
 \item{split_var}{a `character`, the group variable}
+
+\item{...}{other arguments passed to methods}
 }
 \value{
 a `data.frame`
