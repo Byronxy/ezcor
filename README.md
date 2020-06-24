@@ -63,3 +63,10 @@ head(res)
 #> CHOL -0.15958816 3.525194e-01 spearman   none B3GALT6 ERRFI1  CHOL      
 #> COAD  0.04617798 4.349938e-01 spearman   none B3GALT6 ERRFI1  COAD
 ```
+
+
+## :writing\_hand: Author
+
+  - [Yi Xiong](https://github.com/Byronxy)
+  - [Shixiang Wang](https://github.com/ShixiangWang)
+
