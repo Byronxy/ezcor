@@ -11,7 +11,7 @@ ezcor_partial_cor(
   var1 = NULL,
   var2 = NULL,
   var3 = NULL,
-  Cor_method = "pearson",
+  cor_method = "pearson",
   sig_label = TRUE,
   ...
 )
@@ -29,9 +29,11 @@ ezcor_partial_cor(
 
 \item{var3}{a `character` or `character vector`, the third variable in correlation}
 
-\item{Cor_method}{method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"}
+\item{cor_method}{method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"}
 
 \item{sig_label}{whether add symbal of significance. P < 0.001,"***"; P < 0.01,"**"; P < 0.05,"*"; P >=0.05,""}
+
+\item{...}{other arguments passed to methods}
 }
 \value{
 a `data.frame`
@@ -39,8 +41,24 @@ a `data.frame`
 \description{
 Run partial correlation
 }
+\examples{
+data("exprSet", package = "ezcor", envir = environment())
+g1 <- colnames(exprSet)[3]
+g2 <- colnames(exprSet)[4]
+g3 <- colnames(exprSet)[c(5,6)]
+res <- ezcor::ezcor_partial_cor(data = exprSet,
+                                var1 = g1,
+                                var2 = g2,
+                                var3 = g3,
+                                split = T,
+                                split_var = "tissue",
+                                cor_method = "pearson",
+                                sig_label = TRUE)
+
+
+}
 \seealso{
-[ppcor::pcor.test()] which this function wraps.
+\link{ppcor::pcor.test()} which this function wraps.
 }
 \author{
 Yi Xiong

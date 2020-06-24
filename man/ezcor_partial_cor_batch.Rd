@@ -11,7 +11,7 @@ ezcor_partial_cor_batch(
   var1 = NULL,
   var2 = NULL,
   var3 = NULL,
-  Cor_method = "pearson",
+  cor_method = "pearson",
   sig_label = TRUE,
   ...
 )
@@ -29,9 +29,11 @@ ezcor_partial_cor_batch(
 
 \item{var3}{a `character` or `character vector`, the third variable in correlation}
 
-\item{Cor_method}{method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"}
+\item{cor_method}{method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"}
 
 \item{sig_label}{whether add symbal of significance. P < 0.001,"***"; P < 0.01,"**"; P < 0.05,"*"; P >=0.05,""}
+
+\item{...}{other arguments passed to methods}
 }
 \value{
 a `data.frame`

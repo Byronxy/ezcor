@@ -16,6 +16,8 @@ ezcor_bicor(data, var1, var2, split = FALSE, split_var, ...)
 \item{split}{`logic value`,whether perform correlation grouped by a variable, default is 'FALSE'}
 
 \item{split_var}{a `character`, the group variable}
+
+\item{...}{other arguments passed to methods}
 }
 \value{
 a `data.frame`
@@ -23,8 +25,18 @@ a `data.frame`
 \description{
 Run Biweight Midcorrelation
 }
+\examples{
+data("exprSet", package = "ezcor", envir = environment())
+g1 <- colnames(exprSet)[3]
+g2 <- colnames(exprSet)[4]
+genelist <- colnames(exprSet)
+genelist <-  setdiff(genelist,c("patient","tissue",g1))
+res <- ezcor::ezcor_bicor(data = exprSet,g1,g2)
+
+
+}
 \seealso{
-[WGCNA::bicor()] which this function wraps.
+\link{WGCNA::bicor()} which this function wraps.
 }
 \author{
 Yi Xiong

@@ -1,17 +1,25 @@
 #' Run Biweight Midcorrelation
 #'
-#' @inheritParams WGCNA::bicor
-#' @seealso [WGCNA::bicor()] which this function wraps.
+#' @seealso \link{WGCNA::bicor()} which this function wraps.
 #' @param data a `data.frame` containing variables
 #' @param var1 a `character`, the first variable in correlation
 #' @param var2 a `character`, the second variable in correlation
 #' @param split `logic value`,whether perform correlation grouped by a variable, default is 'FALSE'
 #' @param split_var a `character`, the group variable
+#' @param ... other arguments passed to methods
 #' @import purrr
 #' @import dplyr
 #' @return a `data.frame`
 #' @author Yi Xiong
 #' @export
+#' @examples
+#' data("exprSet", package = "ezcor", envir = environment())
+#' g1 <- colnames(exprSet)[3]
+#' g2 <- colnames(exprSet)[4]
+#' genelist <- colnames(exprSet)
+#' genelist <-  setdiff(genelist,c("patient","tissue",g1))
+#' res <- ezcor::ezcor_bicor(data = exprSet,g1,g2)
+#'
 #'
 ezcor_bicor <- function(
   data,
@@ -72,13 +80,14 @@ ezcor_bicor <- function(
 
 #' Run Biweight Midcorrelation in a batch mode
 #'
-#' @inheritParams WGCNA::bicor
+#'
 #' @seealso [WGCNA::bicor()] which this function wraps.
 #' @param data a `data.frame` containing variables
 #' @param var1 a `character`, the first variable in correlation
 #' @param var2 a `vector` containing variables in a batch mode
 #' @param split `logic value`, whether perform correlation grouped by a variable, default is 'FALSE'
 #' @param split_var a `character`, the group variable
+#' @param ... other arguments passed to methods
 #' @import purrr
 #' @import dplyr
 #' @return a `data.frame`

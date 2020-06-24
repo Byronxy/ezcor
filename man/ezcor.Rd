@@ -10,7 +10,7 @@ ezcor(
   split_var = NULL,
   var1 = NULL,
   var2 = NULL,
-  Cor_method = "pearson",
+  cor_method = "pearson",
   adjust_method = "none",
   use = "complete",
   sig_label = TRUE,
@@ -28,7 +28,7 @@ ezcor(
 
 \item{var2}{a `character, the second variable in correlation}
 
-\item{Cor_method}{method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"}
+\item{cor_method}{method="pearson" is the default value. The alternatives to be passed to cor are "spearman" and "kendall"}
 
 \item{adjust_method}{What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")}
 
@@ -43,6 +43,20 @@ a `data.frame`
 }
 \description{
 Run correlation between two variables and support group by a variable
+}
+\examples{
+data("exprSet", package = "ezcor", envir = environment())
+g1 <- colnames(exprSet)[3]
+g2 <- colnames(exprSet)[4]
+res <- ezcor::ezcor(data= exprSet,
+                   split = T,
+                   split_var = "tissue",
+                   var1 = g1,
+                   var2 = g2,
+                   cor_method = "spearman",
+                   adjust_method = "none",
+                   sig_label = TRUE,
+                   verbose = TRUE)
 }
 \author{
 Yi Xiong
