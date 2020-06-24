@@ -23,7 +23,7 @@
 #' g1 <- colnames(exprSet)[3]
 #' g2 <- colnames(exprSet)[4]
 #' res <- ezcor::ezcor(data= exprSet,
-#'                    split = T,
+#'                    split = TRUE,
 #'                    split_var = "tissue",
 #'                    var1 = g1,
 #'                    var2 = g2,
@@ -181,14 +181,14 @@ ezcor <- function(data = NULL,
 #' res <- ezcor::ezcor_batch(data = exprSet,
 #'                           var1 = target_variable,
 #'                           var2 = genelist,
-#'                           split = T,
+#'                           split = TRUE,
 #'                           split_var = "tissue",
 #'                           cor_method = "pearson",
 #'                           adjust_method = "none",
 #'                           use = "complete",
 #'                           sig_label = TRUE,
-#'                           parallel = F,
-#'                           verbose = T)
+#'                           parallel = FALSE,
+#'                           verbose = TRUE)
 
 ezcor_batch <- function(data,
                         var1,

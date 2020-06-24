@@ -49,7 +49,7 @@ data("exprSet", package = "ezcor", envir = environment())
 g1 <- colnames(exprSet)[3]
 g2 <- colnames(exprSet)[4]
 res <- ezcor::ezcor(data= exprSet,
-                   split = T,
+                   split = TRUE,
                    split_var = "tissue",
                    var1 = g1,
                    var2 = g2,
